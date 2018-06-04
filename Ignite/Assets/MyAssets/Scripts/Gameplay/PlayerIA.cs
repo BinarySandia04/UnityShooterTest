@@ -1,17 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerIA : MonoBehaviour {
 
     public float health;
     public GameObject muerte;
 
+    public GameObject maloCanvas;
+
     public Transform donde;
+
+    private float maxHealth;
+
+    public float getMaxHealth()
+    {
+        return maxHealth;
+    }
 
     private void Start()
     {
         donde = transform;
+        maxHealth = health;
     }
 
     public void Damage(float damage)

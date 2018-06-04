@@ -5,6 +5,8 @@ public class WeaponLookAtMouse : MonoBehaviour {
 
     public GameObject bullet;
 
+    public GameObject hitObject;
+
     public Vector3 bulletOffset;
 
     private bool reshot = true;
@@ -25,6 +27,18 @@ public class WeaponLookAtMouse : MonoBehaviour {
             }
             //one of coordiantes being always zero for aligned plane
             
+            if(hit.transform.gameObject != null)
+            {
+                hitObject = hit.transform.gameObject;
+                if (hit.transform.gameObject.GetComponent<PlayerIA>() != null)
+                {
+                    hit.transform.gameObject.GetComponent<PlayerIA>().maloCanvas.SetActive(true);
+                }
+            } else
+            {
+                hitObject = null;
+            }
+
             transform.LookAt(position);
         }
         if (Input.GetKey(KeyCode.Mouse0) && reshot)
