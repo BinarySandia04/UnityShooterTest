@@ -51,8 +51,6 @@ public class PlayerIA : MonoBehaviour {
             }
         }
 
-        Debug.Log("Muerto!");
-
         gameObject.SetActive(false);
     }
 

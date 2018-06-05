@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BulletScript : MonoBehaviour {
 
@@ -23,13 +21,11 @@ public class BulletScript : MonoBehaviour {
             {
                 collision.gameObject.GetComponent<Shaker>().StartShake(0.3f, 0.2f, 0f, 0.2f);
                 collision.gameObject.GetComponent<Shaker>().FadeBetween(Color.white, Color.red, 0.3f);
-                Debug.Log("Shaked!");
             } else
             {
                 Debug.LogWarning("No hay Shake en " + collision.gameObject.name);
             }
         }
-        Debug.Log("Ola");
         Destroy(this.gameObject);
     }
 }

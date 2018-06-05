@@ -22,12 +22,15 @@ public class MaloCanvas : MonoBehaviour {
     [SerializeField]
     private float fadeAwayTime;
 
-    private float elapsed = 1f;
+    private float elapsed = 0f;
+    private float time = 0f;
+    private bool coroutined = false;
 
     private Vector3 offset = new Vector3(0.0f, 3f, 0.0f);
 
     void Start()
     {
+        
         if (malo)
         {
             nameText.text = "Malo";
@@ -84,13 +87,11 @@ public class MaloCanvas : MonoBehaviour {
 
             if (pointer.hitObject == Malo)
             {
-                // El puntero apunta a este malo
-                gameObject.SetActive(true);
-                //TODO: Efecto de aparicion
+                GetComponent<CanvasGroup>().alpha += 0.1f;
             }
             else
             {
-                gameObject.SetActive(false);
+                GetComponent<CanvasGroup>().alpha -= 0.1f;
             }
         }
 
