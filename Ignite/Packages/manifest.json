@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "com.unity.render-pipelines.high-definition": "1.1.2-preview",
-    "com.unity.shadergraph": "1.1.9-preview"
-  }
-}
