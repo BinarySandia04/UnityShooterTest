@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using DatabaseControl;
+using TMPro;
 
 public class UserAccountManagement : MonoBehaviour {
 
     public static UserAccountManagement instance;
+
+    public TextMeshProUGUI usernameText;
 
     void Awake()
     {
@@ -37,6 +40,7 @@ public class UserAccountManagement : MonoBehaviour {
     {
         playerUsername = username;
         playerPassword = password;
+        usernameText.text = playerUsername;
 
         isLoggedIn = true;
     }

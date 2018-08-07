@@ -8,6 +8,11 @@ public class LoadScript : MonoBehaviour {
 
     public GameObject loadScreen;
 
+    public void closeApp()
+    {
+        Application.Quit();
+    }
+
     public void LoadLevel(string name)
     {
         loadScreen.gameObject.SetActive(true);

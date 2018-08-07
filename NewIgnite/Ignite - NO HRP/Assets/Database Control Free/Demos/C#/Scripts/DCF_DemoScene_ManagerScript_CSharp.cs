@@ -74,8 +74,9 @@ public class DCF_DemoScene_ManagerScript_CSharp : MonoBehaviour {
         string username = PlayerPrefs.GetString("Account/Username");
         string password = PlayerPrefs.GetString("Account/Password");
         Debug.Log(username + " " + password);
+        loginImage.SetActive(false);
         IEnumerator e = DCF.Login(username, password); // << Send request to login, providing username and password
-        UserAccountManagement.instance.LogIn(username, password);
+        
         while (e.MoveNext())
         {
             yield return e.Current;
@@ -86,8 +87,9 @@ public class DCF_DemoScene_ManagerScript_CSharp : MonoBehaviour {
             //Username and Password were correct. Stop showing 'Loading...' and show the LoggedIn UI. And set the text to display the username.
             
             loadingParent.gameObject.SetActive(false);
-            loginImage.SetActive(false);
+            
             Debug.Log("Helouda");
+            UserAccountManagement.instance.LogIn(username, password);
         }
     }
 
@@ -156,8 +158,6 @@ public class DCF_DemoScene_ManagerScript_CSharp : MonoBehaviour {
             //Username and Password were valid. Account has been created. Stop showing 'Loading...' and show the loggedIn UI and set text to display the username.
             ResetAllUIElements();
             loadingParent.gameObject.SetActive(false);
-            loggedInParent.gameObject.SetActive(true);
-            LoggedIn_DisplayUsernameText.text = "Logged In As: " + playerUsername;
         } else
         {
             //Something went wrong logging in. Stop showing 'Loading...' and go back to RegisterUI
