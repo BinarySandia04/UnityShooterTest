@@ -1,22 +1,33 @@
 ﻿using System.Collections;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Networking;
 
-public class WeaponLookAtMouse : MonoBehaviour {
+public class WeaponLookAtMouse : NetworkBehaviour {
 
-    public GameObject bullet;
 
     public GameObject hitObject;
 
-    public Vector3 bulletOffset;
 
-    private bool reshot = true;
+    public GameObject Player;
+
+    public Camera playerCam;
+
+    // TODO: Poner apartado de propiedades de arma y poner mas armas!
+
+    
 
 	// Update is called once per frame
 	void Update () {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
+            if (hit.transform.gameObject == Player)
+            {
+                return; // FUCK IT
+            }
             Vector3 position;
             if (hit.transform.gameObject.GetComponent<PlayerController>() != null || hit.transform.gameObject.GetComponent<PlayerIA>() != null)
             {
@@ -41,31 +52,8 @@ public class WeaponLookAtMouse : MonoBehaviour {
 
             transform.LookAt(position);
         }
-        if (Input.GetKey(KeyCode.Mouse0) && reshot)
-        {
-            StartCoroutine(fire(bullet.GetComponent<BulletScript>().waitTime));
-        }
+        
     }
 
-    void Fire()
-    {
-        // Create the Bullet from the Bullet Prefab
-        Quaternion q = transform.rotation;
-        var bulleti = Instantiate(bullet, transform.position, q);
-        Transform t = bulleti.transform;
-        t.Translate(bulletOffset);
-       
-
-        // Destroy the bullet after 2 seconds
-        Destroy(bulleti, 2.0f);
-        reshot = false;
-    }
-
-    IEnumerator fire(float seconds)
-    {
-        Fire();
-        yield return new WaitForSeconds(seconds);
-        reshot = true;
-    }
 
 }

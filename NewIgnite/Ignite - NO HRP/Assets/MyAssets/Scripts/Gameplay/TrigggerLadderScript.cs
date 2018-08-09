@@ -6,9 +6,9 @@ public class TrigggerLadderScript : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (player.GetComponent<PlayerController>())
+        if (player.GetComponent<InternalPlayerController>())
         {
-            player.GetComponent<PlayerController>().ladear(other);
+            player.GetComponent<InternalPlayerController>().ladear(other);
         }
     }
 

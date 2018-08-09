@@ -29,7 +29,7 @@ public class Shaker : MonoBehaviour {
             float y = Random.Range(-1f, 1f) * magnitudeY;
             float z = Random.Range(-1f, 1f) * magnitudeZ;
 
-            transform.localPosition = new Vector3(x + transform.position.x, y + transform.position.y, z + transform.position.z);
+            transform.localPosition = new Vector3(x + transform.localPosition.x, y + transform.localPosition.y, z + transform.localPosition.z);
 
             elapsed += Time.deltaTime;
 
@@ -42,11 +42,16 @@ public class Shaker : MonoBehaviour {
 
     public void StartShake(float duration, float magnitudeX, float magnitudeY, float magnitudeZ)
     {
-        if(!(gameObject.GetComponent<PlayerIA>().health < 0))
-        {
+
             StartCoroutine(Shake(duration, magnitudeX, magnitudeY, magnitudeZ));
-        }
+       
         
+    }
+
+    public void GetDamageAnimation()
+    {
+        StartShake(0.3f, 0.2f, 0f, 0.2f);
+        FadeBetween(Color.red, Color.white, 0.3f);
     }
 
     public void FadeBetween(Color color1, Color color2, float time)

@@ -39,10 +39,10 @@ public class CameraFollowerPlayer : MonoBehaviour {
             {
                 float mx = ((Input.mousePosition.x - Screen.currentResolution.width / 2) * 2) / Screen.currentResolution.width;
                 float my = ((Input.mousePosition.y - Screen.currentResolution.height / 2) * 2) / Screen.currentResolution.height;
-                PlayerController pc = target.GetComponent<PlayerController>();
+                InternalPlayerController pc = target.GetComponent<InternalPlayerController>();
                 if(pc == null)
                 {
-                    Debug.LogWarning("No hay PlayerController en target!");
+                    Debug.LogWarning("No hay InternalPlayerController en target!");
                     return;
                 }
                 float multi = pc.camDistanceMultiplier;

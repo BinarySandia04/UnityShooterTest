@@ -26,7 +26,11 @@ public class UserAccountManagement : MonoBehaviour {
 
     public static bool isLoggedIn { get; protected set; }
 
-    public static string LoggedIn_Data { get; protected set; }
+    public static bool dataIsSetUp { get; protected set; }
+
+    public static string Data { get; protected set; }
+
+    public delegate void OnDataReceivedCallback(string data);
 
     public void LogOut()
     {
@@ -44,7 +48,14 @@ public class UserAccountManagement : MonoBehaviour {
 
         isLoggedIn = true;
     }
-
+    public void sendData(string data)
+    {
+        StartCoroutine(SendData(data));
+    }
+    public void getData()
+    {
+        StartCoroutine(GetData());
+    }
     IEnumerator GetData()
     {
         IEnumerator e = DCF.GetUserData(playerUsername, playerPassword); // << Send request to get the player's data string. Provides the username and password
@@ -60,8 +71,8 @@ public class UserAccountManagement : MonoBehaviour {
         }
         else
         {
-            Debug.Log(response);
-            LoggedIn_Data = response;
+            Data = response;
+            dataIsSetUp = true;
         }
     }
     IEnumerator SendData(string data)
@@ -78,5 +89,26 @@ public class UserAccountManagement : MonoBehaviour {
             Debug.Log("Data enviada!");
 
         }
+    }
+
+    public void updateData()
+    {
+        StartCoroutine(GetData());
+    }
+
+    private bool _firstTimeUpdatedData = true;
+
+    void Update()
+    {
+        if (isLoggedIn && _firstTimeUpdatedData)
+        {
+            _firstTimeUpdatedData = false;
+            updateData();
+        }
+    }
+
+    void Start()
+    {
+        dataIsSetUp = false;
     }
 }

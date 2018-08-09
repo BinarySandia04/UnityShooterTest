@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using DatabaseControl; // << Remember to add this reference to your scripts which use DatabaseControl
+using UnityEngine.SceneManagement;
 
 public class DCF_DemoScene_ManagerScript_CSharp : MonoBehaviour {
 
@@ -145,7 +146,7 @@ public class DCF_DemoScene_ManagerScript_CSharp : MonoBehaviour {
     }
     IEnumerator RegisterUser()
     {
-        IEnumerator e = DCF.RegisterUser(playerUsername, playerPassword, "Hello World"); // << Send request to register a new user, providing submitted username and password. It also provides an initial value for the data string on the account, which is "Hello World".
+        IEnumerator e = DCF.RegisterUser(playerUsername, playerPassword, "[LEVEL]0/[POINTS]0/[KILLS]0/[DEATHS]0"); // << Send request to register a new user, providing submitted username and password. It also provides an initial value for the data string on the account, which is "Hello World".
         UserAccountManagement.instance.LogIn(playerUsername, playerPassword);
         while (e.MoveNext())
         {
@@ -173,6 +174,8 @@ public class DCF_DemoScene_ManagerScript_CSharp : MonoBehaviour {
                 Login_ErrorText.text = "Error: Unknown Error. Please try again later.";
             }
         }
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     
 
