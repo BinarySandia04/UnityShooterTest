@@ -127,11 +127,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 3
-  m_SendInterval: 0.05882353
+  m_SendInterval: 0
   m_SyncRotationAxis: 7
   m_RotationSyncCompression: 0
   m_SyncSpin: 1
-  m_MovementTheshold: 0.001
+  m_MovementTheshold: 9.64
   m_VelocityThreshold: 0.0001
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
@@ -147,8 +147,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f86d790005fee84419a4c87dac3a695b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.3
-  damage: 20
+  speed: 50
+  damage: 10
   waitTime: 0.4
 --- !u!114 &114799572354906616
 MonoBehaviour:

@@ -20,6 +20,11 @@ public class WeaponLookAtMouse : NetworkBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+        if (!Player.GetComponent<InternalPlayerController>().transform.parent.GetComponent<PlayerController>().isLocalPlayer)
+        {
+            return;
+        }
+
         Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
@@ -29,7 +34,7 @@ public class WeaponLookAtMouse : NetworkBehaviour {
                 return; // FUCK IT
             }
             Vector3 position;
-            if (hit.transform.gameObject.GetComponent<PlayerController>() != null || hit.transform.gameObject.GetComponent<PlayerIA>() != null)
+            if (hit.transform.gameObject.GetComponent<InternalPlayerController>() != null || hit.transform.gameObject.GetComponent<PlayerIA>() != null)
             {
                 position = hit.point;//this is relative to 0,0,0
             } else

@@ -5,13 +5,13 @@ public class BulletScript : MonoBehaviour {
     // Nota importante: este script solo se ejecuta en el servidor.
 
     public float speed;
-    public float damage;
+    public int damage;
     public float waitTime;
 
     private void Update()
     {
         Rigidbody rb = GetComponent<Rigidbody>();
-        rb.AddForce(transform.forward, ForceMode.VelocityChange);
+        rb.velocity = transform.forward * speed;
     }
     
     private void OnCollisionEnter(Collision collision)
@@ -24,7 +24,7 @@ public class BulletScript : MonoBehaviour {
         }
         if(collision.gameObject.GetComponent<InternalPlayerController>() != null)
         {
-            collision.transform.parent.GetComponent<PlayerController>().RpcGetDamage(0);
+            collision.transform.parent.GetComponent<PlayerController>().RpcGetDamage(damage);
         }
         if (collision.gameObject.GetComponent<PlayerIA>() != null)
         {

@@ -6,11 +6,16 @@ using UnityEngine.UI;
 
 public class InternalPlayerController : NetworkBehaviour
 {
+
     public TextMeshProUGUI ammoText;
 
     public GameObject bullet;
-
+    public GameObject muertoPrefab;
+    [Space]
     public Slider reloadingBar;
+    public TextMeshProUGUI reloadingBarInfo;
+    public Image fill;
+    [Space]
     public float multiplier = 1f;
 
     public float smoothSpeed = 0.125f;
@@ -34,8 +39,11 @@ public class InternalPlayerController : NetworkBehaviour
 
     public GameObject camara;
 
+    private NetworkStartPosition[] spawnpoints;
+
     void Start()
     {
+
         ammoText.text = cargador + " / " + gameObject.GetComponent<PlayerPropieties>().totalAmmo;
 
         GameObject[] myObjects;
@@ -50,9 +58,6 @@ public class InternalPlayerController : NetworkBehaviour
 
         }
     }
-
-
-
     // Update is called once per frame
     void Update()
     {
@@ -199,7 +204,59 @@ public class InternalPlayerController : NetworkBehaviour
         if (dontLad == false && collision.gameObject.GetComponent<LadderScript>() != null) transform.Translate(Vector3.up * collision.gameObject.GetComponent<LadderScript>().ladderGap);
     }
 
+    public void damageThisPlayer(int damage)
+    {
+        PlayerPropieties pp = GetComponent<PlayerPropieties>();
 
+        float newHealth = pp.health;
+        float newShield = pp.shield;
+
+        for(int i = 0; i < damage; i++)
+        {
+            if(newShield > 0)
+            {
+                newShield--;
+            } else
+            {
+                if(newHealth > 0)
+                {
+                    newHealth--;
+                    if (newHealth == 0) break;
+                }
+            }
+        }
+
+        pp.health = newHealth;
+        pp.shield = newShield;
+
+        if(newHealth == 0)
+        {
+            // Muerto
+            Debug.Log(gameObject.name + " ha muerto");
+            gameObject.SetActive(false);
+            // Animacion
+            GameObject muerto = Instantiate(muertoPrefab, transform.position, transform.rotation);
+            
+
+            NetworkServer.Spawn(muerto);
+
+            Collider[] colliders = Physics.OverlapSphere(transform.position, 2f);
+
+            foreach (Collider objetoCercano in colliders)
+            {
+                Rigidbody rb = objetoCercano.GetComponent<Rigidbody>();
+
+                if (rb != null)
+                {
+                    rb.AddExplosionForce(200f, transform.position, 20f);
+                }
+            }
+
+            transform.localPosition = Vector3.zero;
+            transform.parent.GetComponent<PlayerController>().respawn();
+
+        }
+    }
 
     IEnumerator fire(float seconds)
     {
@@ -210,7 +267,7 @@ public class InternalPlayerController : NetworkBehaviour
         // Create the Bullet from the Bullet Prefab
         if (cargador == 0)
         {
-            StartCoroutine(reload(5));
+            StartCoroutine(reload(3));
             yield return null;
         }
         else
@@ -228,18 +285,29 @@ public class InternalPlayerController : NetworkBehaviour
 
     }
 
-    IEnumerator reload(float seconds)
+    IEnumerator reload(float seconds) // TODO: boton de recargar [KeyCode.R]
     {
+        reloadingBar.gameObject.SetActive(true);
+        reloadingBarInfo.gameObject.SetActive(true);
+        fill.color = new Color(255, 255, 255, 255);
+
+        reloadingBarInfo.text = "Reloading...";
+
         reloading = true;
 
-        for (float i = 0; i < seconds; i += 0.05f)
+        for (float i = 0; i < seconds; i += 0.01f)
         {
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.01f);
             float progress = Mathf.Clamp01(i / seconds);
             reloadingBar.value = progress;
         }
 
         cargador = gameObject.GetComponent<PlayerPropieties>().GetNewMagazineOf(20);
         reloading = false;
+
+        reloadingBarInfo.gameObject.SetActive(false);
+        reloadingBar.gameObject.SetActive(false);
     }
+
+    
 }
