@@ -15,10 +15,11 @@ public class PlayerPropieties : NetworkBehaviour {
 
     public int weaponNumber = 0;
 
-    public int GetNewMagazineOf(int bullets)
+    public int GetNewMagazineOf(int bullets, int currentMagazine)
     {
-        int i, a = 0;
-        for(i = 0; i < bullets; i++)
+        int i, a;
+        a = currentMagazine;
+        for(i = a; i < bullets; i++)
         {
             if (totalAmmo != 0)
             {
@@ -26,8 +27,7 @@ public class PlayerPropieties : NetworkBehaviour {
                 totalAmmo--;
             }
         }
-            
-            
+           
         
         return a;
     }

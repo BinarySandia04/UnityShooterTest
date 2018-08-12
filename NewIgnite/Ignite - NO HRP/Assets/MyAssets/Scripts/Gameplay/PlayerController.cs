@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 public class PlayerController : NetworkBehaviour {
 
     public InternalPlayerController internalPlayer;
+    public ActionSliderManager sliderAction;
     [Space]
     public GameObject bullet;
     public Vector3 bulletOffset;
@@ -87,29 +88,14 @@ public class PlayerController : NetworkBehaviour {
 
     public void respawn()
     {
-        StartCoroutine(respawnThisPlayer());
-    }
-
-
-    IEnumerator respawnThisPlayer()
-    {
-        internalPlayer.reloadingBar.gameObject.SetActive(true);
-        internalPlayer.reloadingBarInfo.gameObject.SetActive(true);
-        internalPlayer.fill.color = new Color(0, 255, 0, 200);
-
-        internalPlayer.reloadingBarInfo.text = "Respawning...";
-
-        for (float i = 0; i < 7; i += 0.01f)
-        {
-            yield return new WaitForSeconds(0.01f);
-            float progress = Mathf.Clamp01(i / 10);
-            internalPlayer.reloadingBar.value = progress;
-        }
-
-        internalPlayer.reloadingBarInfo.gameObject.SetActive(false);
-        internalPlayer.reloadingBar.gameObject.SetActive(false);
-
-        RpcRespawn();
+        sliderAction.doSliderThings(new Color(0, 255, 0, 200), Color.black, "Respawning..", 7f, 0,
+            () =>
+            {
+                // Nada xd
+            }, () =>
+            {
+                RpcRespawn();
+            });
     }
 
 }
