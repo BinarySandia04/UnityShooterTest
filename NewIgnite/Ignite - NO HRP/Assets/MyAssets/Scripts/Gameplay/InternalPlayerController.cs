@@ -13,6 +13,7 @@ public class InternalPlayerController : NetworkBehaviour
     public GameObject muertoPrefab;
     [Space]
     public ActionSliderManager actionSlider;
+    public GameObject pauseMenu;
     [Space]
     public float multiplier = 1f;
 
@@ -41,6 +42,7 @@ public class InternalPlayerController : NetworkBehaviour
 
     void Start()
     {
+        pauseMenu.SetActive(false);
 
         ammoText.text = cargador + " / " + gameObject.GetComponent<PlayerPropieties>().totalAmmo;
 
@@ -67,6 +69,11 @@ public class InternalPlayerController : NetworkBehaviour
         if (Input.GetKey(KeyCode.Mouse0) && reshot && !reloading)
         {
             StartCoroutine(fire(bullet.GetComponent<BulletScript>().waitTime));
+        }
+
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            pauseMenu.SetActive(true);
         }
 
         if (!camara.GetComponent<CameraFollowerPlayer>().start)
@@ -310,5 +317,19 @@ public class InternalPlayerController : NetworkBehaviour
 
     }
 
-    
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.name == "Jumper")
+        {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                Rigidbody rb = GetComponent<Rigidbody>();
+                Vector3 vel = rb.velocity;
+                vel.y = 7;
+                rb.velocity = vel;
+            }
+        }
+    }
+
+
 }

@@ -2,8 +2,7 @@
 using UnityEngine.Networking;
 
 public class HostGame : MonoBehaviour {
-
-    public LoadScript loading;
+    
 
     [SerializeField]
     private uint roomSize = 8;
@@ -36,5 +35,20 @@ public class HostGame : MonoBehaviour {
 
         }
     }
+
+    public void TurnOffMatchMaker()
+    {
+        networkManager.StopMatchMaker();
+    }
+
+    public void TurnOnMatchMaker()
+    {
+        networkManager.StartMatchMaker();
+        networkManager.OnStartHost();
+    }
+
+    
+
+    
 
 }
