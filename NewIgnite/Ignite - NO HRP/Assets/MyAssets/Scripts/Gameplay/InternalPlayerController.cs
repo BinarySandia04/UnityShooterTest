@@ -31,6 +31,8 @@ public class InternalPlayerController : NetworkBehaviour
 
     private bool grounded = false; // TODO: Este solo detecta si esta en el suelo para desactivar aircontrol. onGround solo es para saltar
 
+    private bool resetedRotation = true;
+
     public int cargador = 20;
 
     private bool reshot = true;
@@ -78,55 +80,84 @@ public class InternalPlayerController : NetworkBehaviour
 
         if (!camara.GetComponent<CameraFollowerPlayer>().start)
         {
-
-
             Rigidbody rb = GetComponent<Rigidbody>();
 
+            if (camara.GetComponent<CameraFollowerPlayer>().firstPerson)
+            {
+                if (Input.GetKey(KeyCode.W))
+                {
+                    transform.Translate(Vector3.forward * 0.04f);
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    transform.Translate(Vector3.left * 0.04f);
+                }
+                if (Input.GetKey(KeyCode.S))
+                {
+                    transform.Translate(-Vector3.forward * 0.04f);
+                }
+                if (Input.GetKey(KeyCode.D))
+                {
+                    transform.Translate(-Vector3.left * 0.04f);
+                }
 
-            if (Input.GetKey(KeyCode.W))
+
+                
+            } else
             {
-                if (grounded == true)
+                transform.rotation = new Quaternion();
+                if (Input.GetKey(KeyCode.W))
                 {
-                    rb.velocity = rb.velocity + Vector3.forward * multiplier;
+
+                    if (grounded == true)
+                    {
+                        rb.velocity = rb.velocity + Vector3.forward * multiplier;
+                    }
+                    else
+                    {
+                        rb.velocity = rb.velocity + Vector3.forward * multiplier * airControl;
+                    }
                 }
-                else
+                if (Input.GetKey(KeyCode.S))
                 {
-                    rb.velocity = rb.velocity + Vector3.forward * multiplier * airControl;
+                    if (grounded == true)
+                    {
+                        rb.velocity = rb.velocity + Vector3.back * multiplier;
+                    }
+                    else
+                    {
+                        rb.velocity = rb.velocity + Vector3.back * multiplier * airControl;
+                    }
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    if (grounded == true)
+                    {
+                        rb.velocity = rb.velocity + Vector3.left * multiplier;
+                    }
+                    else
+                    {
+                        rb.velocity = rb.velocity + Vector3.left * multiplier * airControl;
+                    }
+                }
+                if (Input.GetKey(KeyCode.D))
+                {
+                    if (grounded == true)
+                    {
+                        rb.velocity = rb.velocity + Vector3.right * multiplier;
+                    }
+                    else
+                    {
+                        rb.velocity = rb.velocity + Vector3.right * multiplier * airControl;
+                    }
                 }
             }
-            if (Input.GetKey(KeyCode.S))
-            {
-                if (grounded == true)
-                {
-                    rb.velocity = rb.velocity + Vector3.back * multiplier;
-                }
-                else
-                {
-                    rb.velocity = rb.velocity + Vector3.back * multiplier * airControl;
-                }
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                if (grounded == true)
-                {
-                    rb.velocity = rb.velocity + Vector3.left * multiplier;
-                }
-                else
-                {
-                    rb.velocity = rb.velocity + Vector3.left * multiplier * airControl;
-                }
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                if (grounded == true)
-                {
-                    rb.velocity = rb.velocity + Vector3.right * multiplier;
-                }
-                else
-                {
-                    rb.velocity = rb.velocity + Vector3.right * multiplier * airControl;
-                }
-            }
+
+
+            
+
+
+            
             if (Input.GetKeyDown(KeyCode.R))
             {
                 if(GetComponent<PlayerPropieties>().totalAmmo != 0f && cargador != 20 && !reloading)
@@ -138,7 +169,7 @@ public class InternalPlayerController : NetworkBehaviour
                         cargador = gameObject.GetComponent<PlayerPropieties>().GetNewMagazineOf(20, cargador);
                         ammoText.text = cargador + " / " + gameObject.GetComponent<PlayerPropieties>().totalAmmo;
                         reloading = false;
-                    });
+                    }, false);
                 }
             }
 
@@ -229,6 +260,7 @@ public class InternalPlayerController : NetworkBehaviour
 
     public void damageThisPlayer(int damage)
     {
+
         PlayerPropieties pp = GetComponent<PlayerPropieties>();
 
         float newHealth = pp.health;
@@ -257,6 +289,8 @@ public class InternalPlayerController : NetworkBehaviour
             // Muerto
             Debug.Log(gameObject.name + " ha muerto");
             gameObject.SetActive(false);
+
+            
             // Animacion
             GameObject muerto = Instantiate(muertoPrefab, transform.position, transform.rotation);
             
@@ -276,7 +310,11 @@ public class InternalPlayerController : NetworkBehaviour
             }
 
             transform.localPosition = Vector3.zero;
+
+            
             transform.parent.GetComponent<PlayerController>().respawn();
+            
+            
 
         }
     }
@@ -298,7 +336,7 @@ public class InternalPlayerController : NetworkBehaviour
                     cargador = gameObject.GetComponent<PlayerPropieties>().GetNewMagazineOf(20, 0);
                     ammoText.text = cargador + " / " + gameObject.GetComponent<PlayerPropieties>().totalAmmo;
                     reloading = false;
-                });
+                }, false);
             yield return null;
         }
         else

@@ -11,9 +11,12 @@ public class PlayerController : NetworkBehaviour {
     public GameObject bullet;
     public Vector3 bulletOffset;
     public GameObject weapon;
-    
+
+    public GameObject blurBackground;
+
     private int cargador;
     private NetworkStartPosition[] spawnpoints;
+    
 
     void Start()
     {
@@ -27,6 +30,7 @@ public class PlayerController : NetworkBehaviour {
         {
             // I si no lo es en rojo xd
             internalPlayer.GetComponent<Renderer>().material.color = Color.red;
+            weapon.transform.Find("Camera").gameObject.SetActive(false);
         }
     }
 
@@ -50,9 +54,24 @@ public class PlayerController : NetworkBehaviour {
         // Destroy the bullet after 2 seconds
         Destroy(bulleti, 2.0f);
     }
+    
+    public void GetDamage(int damage)
+    {
+        
+        CmdGetDamage(damage);
+        
+    }
+
+    [Command]
+    private void CmdGetDamage(int damage)
+    {
+        Debug.Log("jj");
+        RpcGetDamage(damage);
+    }
+
 
     [ClientRpc]
-    public void RpcGetDamage(int damage)
+    private void RpcGetDamage(int damage)
     {
         // Hacer daño SyncVar bla bla bla...
         Debug.Log("jj");
@@ -80,6 +99,7 @@ public class PlayerController : NetworkBehaviour {
         internalPlayer.GetComponent<PlayerPropieties>().health = PlayerPropieties.maxHealth;
         internalPlayer.GetComponent<PlayerPropieties>().shield = PlayerPropieties.maxShield;
     }
+
     void Update()
     {
         cargador = internalPlayer.cargador;
@@ -88,14 +108,36 @@ public class PlayerController : NetworkBehaviour {
 
     public void respawn()
     {
-        sliderAction.doSliderThings(new Color(0, 255, 0, 200), Color.black, "Respawning..", 7f, 0,
+        blurBackground.SetActive(true);
+        if (!isLocalPlayer)
+        {
+            Debug.Log("Aqui esperas 10 segundos y haces rpcSpawn");
+            StartCoroutine(respawnInThatSeconds(7f));
+        } else
+        {
+            sliderAction.doSliderThings(new Color(0, 255, 0, 200), Color.black, "Respawning..", 7f, 0,
             () =>
             {
                 // Nada xd
             }, () =>
             {
                 RpcRespawn();
-            });
+            }, true);
+        }
     }
+
+    private IEnumerator respawnInThatSeconds(float seconds)
+    {
+        for(float i = 0; i < seconds; i += 0.5f)
+        {
+            yield return new WaitForSecondsRealtime(0.5f);
+        }
+
+        RpcRespawn();
+
+        yield return null;
+    }
+    
+    
 
 }

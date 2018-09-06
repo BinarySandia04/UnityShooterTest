@@ -39,6 +39,7 @@ public class JoinGame : MonoBehaviour {
 
     public void OnMatchList(bool succes, string extendedInfo, List<MatchInfoSnapshot> matches)
     {
+        if (status == null) return;
         status.text = "";
 
         if(matches == null)

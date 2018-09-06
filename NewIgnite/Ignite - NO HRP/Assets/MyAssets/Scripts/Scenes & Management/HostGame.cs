@@ -33,6 +33,9 @@ public class HostGame : MonoBehaviour {
             // Create room
             networkManager.matchMaker.CreateMatch(roomName, roomSize, true, "", "", "", 0, 0, networkManager.OnMatchCreate);
 
+        } else
+        {
+            Debug.Log("Roomname es: " + roomName + " y no puede ser creada!");
         }
     }
 

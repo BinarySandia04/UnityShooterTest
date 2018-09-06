@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 50
-  damage: 10
+  damage: 34
   waitTime: 0.4
 --- !u!114 &114799572354906616
 MonoBehaviour:

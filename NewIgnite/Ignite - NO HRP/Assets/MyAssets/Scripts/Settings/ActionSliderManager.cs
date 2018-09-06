@@ -18,8 +18,9 @@ public class ActionSliderManager : MonoBehaviour {
     private Image barFill;
 
     private bool Sliding;
+    
 
-    public bool doSliderThings(Color sliderColor, Color textColor, string text, float time, float runMultiplierTime, Action beforeAction, Action afterAction)
+    public bool doSliderThings(Color sliderColor, Color textColor, string text, float time, float runMultiplierTime, Action beforeAction, Action afterAction, bool firstPriority)
     {
         if (Sliding)
         {
@@ -27,6 +28,10 @@ public class ActionSliderManager : MonoBehaviour {
         } else
         {
             Sliding = true;
+            if (firstPriority)
+            {
+                StopAllCoroutines();
+            }
             StartCoroutine(DoSliderThings(sliderColor, textColor, text, time, runMultiplierTime, beforeAction, afterAction));
             return true;
         }
@@ -51,14 +56,16 @@ public class ActionSliderManager : MonoBehaviour {
 
         for(float i = 0; i < time; i += 0.02f)
         {
-            yield return new WaitForSeconds(0.02f);
+            yield return new WaitForSecondsRealtime(0.02f);
             if (runing)
             {
-                yield return new WaitForSeconds(0.01f * runMultiplierTime);
+                yield return new WaitForSecondsRealtime(0.01f * runMultiplierTime);
                 i -= 0.01f;
             }
             bar.value = i;
         }
+
+        bar.value = 0;
 
         // Desactivar
         bar.gameObject.SetActive(false);

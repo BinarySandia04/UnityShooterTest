@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using DatabaseControl; // << Remember to add this reference to your scripts which use DatabaseControl
 using UnityEngine.SceneManagement;
+using System;
 
 public class DCF_DemoScene_ManagerScript_CSharp : MonoBehaviour {
 
@@ -30,6 +31,7 @@ public class DCF_DemoScene_ManagerScript_CSharp : MonoBehaviour {
 
     public GameObject loginImage;
     public Toggle rememberChecker;
+    public GameObject loginBlur;
     
 
     //This UI Text displays the username once logged in. It shows it in the form "Logged In As: " + username
@@ -41,6 +43,11 @@ public class DCF_DemoScene_ManagerScript_CSharp : MonoBehaviour {
 
     void Start()
     {
+        if (UserAccountManagement.isLoggedIn)
+        {
+            loginImage.SetActive(false);
+        }
+
         if(PlayerPrefs.GetInt("Account/AutoLogIn") == 1)
         {
             loginParent.SetActive(false);
@@ -48,6 +55,8 @@ public class DCF_DemoScene_ManagerScript_CSharp : MonoBehaviour {
             // Autologin
             StartCoroutine(autoLogInUser());
         }
+
+        loginBlur.GetComponent<Image>().material.SetInt("_Radius", 32);
     }
 
     //Called at the very start of the game
@@ -111,7 +120,7 @@ public class DCF_DemoScene_ManagerScript_CSharp : MonoBehaviour {
             
             ResetAllUIElements();
             loadingParent.gameObject.SetActive(false);
-            loginImage.SetActive(false);
+            
             UserAccountManagement.instance.LogIn(playerUsername, playerPassword);
             if (rememberChecker.isOn)
             {
@@ -121,6 +130,7 @@ public class DCF_DemoScene_ManagerScript_CSharp : MonoBehaviour {
                 PlayerPrefs.Save();
                 Debug.Log("Succes");
             }
+            StartCoroutine(FadeOutLogInImage());
         } else
         {
             //Something went wrong logging in. Stop showing 'Loading...' and go back to LoginUI
@@ -144,6 +154,32 @@ public class DCF_DemoScene_ManagerScript_CSharp : MonoBehaviour {
             }
         }
     }
+
+    IEnumerator FadeOutLogInImage()
+    {
+        float radius = 32f;
+        loginBlur.GetComponent<Image>().material.SetInt("_Radius", 32);
+        Color imageColor = loginImage.GetComponent<Image>().color;
+        Color col = new Color(imageColor.r, imageColor.g, imageColor.b, 0.7f);
+
+        for(float i = 0.64f; i > 0; i -= 0.01f)
+        {
+            col.a = i;
+            loginImage.GetComponent<Image>().color = col;
+            radius -= 0.5f;
+            loginBlur.GetComponent<Image>().material.SetInt("_Radius", (int) radius);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        loginImage.SetActive(false);
+
+        col.a = 0.7f;
+        loginImage.GetComponent<Image>().color = col;
+
+        yield return null;
+    }
+
     IEnumerator RegisterUser()
     {
         IEnumerator e = DCF.RegisterUser(playerUsername, playerPassword, "[LEVEL]0/[POINTS]0/[KILLS]0/[DEATHS]0"); // << Send request to register a new user, providing submitted username and password. It also provides an initial value for the data string on the account, which is "Hello World".

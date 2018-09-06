@@ -24,7 +24,7 @@ public class BulletScript : MonoBehaviour {
         }
         if(collision.gameObject.GetComponent<InternalPlayerController>() != null)
         {
-            collision.transform.parent.GetComponent<PlayerController>().RpcGetDamage(damage);
+            collision.transform.parent.GetComponent<PlayerController>().GetDamage(damage);
         }
         if (collision.gameObject.GetComponent<PlayerIA>() != null)
         {
@@ -32,7 +32,7 @@ public class BulletScript : MonoBehaviour {
             if (collision.gameObject.GetComponent<Shaker>() != null)
             {
                 GameObject.Find("Canvas/ScoreTest").GetComponent<Scoretest>().addScore(50);
-                collision.transform.parent.GetComponent<PlayerController>().RpcGetDamage(0);
+                collision.transform.parent.GetComponent<PlayerController>().GetDamage(0);
 
                 // Sound play
                 if(collision.gameObject.GetComponent<PlayerIA>().health <= 0)

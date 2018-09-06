@@ -25,6 +25,16 @@ public class WeaponLookAtMouse : NetworkBehaviour {
             return;
         }
 
+        if (playerCam.gameObject.GetComponent<CameraFollowerPlayer>().firstPerson)
+        {
+            // Inserte aqui control de camara
+            float h = Input.GetAxis("Mouse X");
+            float v = Input.GetAxis("Mouse Y") * -1;
+            Player.transform.Rotate(0, h, 0);
+            transform.Rotate(v, 0, 0);
+            return;
+        }
+
         Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))

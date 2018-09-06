@@ -8,6 +8,11 @@ public class CustomNetworkManager : NetworkManager {
     public LoadScript load;
     public Scene map;
 
+    public void Start()
+    {
+        ObjectExtension.DontDestroyOnLoad(this);
+    }
+
     public override void OnMatchCreate(bool success, string extendedInfo, MatchInfo matchInfo)
     {
         if(map == null) onlineScene = map.name;
@@ -40,4 +45,10 @@ public class CustomNetworkManager : NetworkManager {
         gameObject.GetComponent<NetworkManagerHUD>().enabled = false;
     }
 
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+        Debug.Log("Enserio xd");
+        Destroy(gameObject);
+    }
 }

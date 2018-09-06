@@ -4,7 +4,9 @@ using UnityEngine;
 public class CameraFollowerPlayer : MonoBehaviour {
 
     public Transform target;
+    public Transform weapon;
     public Transform startTarget;
+    public GameObject firstCamera;
 
     public float smoothSpeed = 0.125f;
     public float smoothStartSpeed = 0.00125f;
@@ -14,6 +16,12 @@ public class CameraFollowerPlayer : MonoBehaviour {
 
     private Vector3 inPos;
     public bool start = true;
+
+    [Space]
+
+    public bool firstPerson = false;
+
+    private Quaternion lastSavedRotation;
 
     private void Start()
     {
@@ -25,6 +33,7 @@ public class CameraFollowerPlayer : MonoBehaviour {
         transform.position = startTarget.position;
 
         StartCoroutine(wait(timeUntilStart));
+
     }
 
 
@@ -34,6 +43,29 @@ public class CameraFollowerPlayer : MonoBehaviour {
 
         if (!start)
         {
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+                if (firstPerson)
+                {
+                    gameObject.GetComponent<Camera>().depth = 0f;
+                    firstPerson = false;
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
+                } else
+                {
+                    firstPerson = true;
+                    weapon.parent.rotation = weapon.localRotation;
+                    weapon.rotation = new Quaternion();
+                    Vector3 fix = weapon.parent.rotation.eulerAngles;
+                    fix.x = 0;
+                    weapon.parent.rotation = Quaternion.Euler(fix);
+                    gameObject.GetComponent<Camera>().depth = -999f;
+                    Cursor.visible = false;
+                    Cursor.lockState = CursorLockMode.Locked;
+                }
+                
+            }
+
             Vector3 desiredPosition = target.position + offset;
             if (Input.GetKey(KeyCode.Mouse1))
             {
